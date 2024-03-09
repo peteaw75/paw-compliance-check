@@ -1,0 +1,12 @@
+---
+- name: 1st check
+  import_playbook: check_memory.yml
+
+- name: 2nd check
+  import_playbook: check_ssh.yml
+
+- name: 3rd check
+  import_playbook: check_https_port.yml
+
+- name: 4th check
+  import_playbook: check_chrony_package.yml

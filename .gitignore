@@ -1,0 +1,4 @@
+#List of files to be excluded
+#Date: 9th March 2024
+*.tar
+*.log

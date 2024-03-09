@@ -1,0 +1,6 @@
+[dev_servers]
+hlrhel801.idm.lokidev.xyz
+hlrhel802.idm.lokidev.xyz
+
+[aap_controller_servers]
+hlaac01.idm.lokidev.xyz

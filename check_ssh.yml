@@ -1,0 +1,27 @@
+---
+- name: 1-2 Check ssh service is enabled 
+  hosts: all
+  tags: paw_check_1-2
+  tasks:
+
+  - name: Collect the status of ssh service
+    ansible.builtin.command:
+      cmd: firewall-cmd --list-services
+    register: ssh_result
+    
+  - name: Display status of ssh service
+    ansible.builtin.debug:  
+      msg: Result is {{ ssh_result.stdout_lines }}
+
+  - name: Check if ssh service is enabled in firewalld daemon
+    ansible.builtin.assert:
+      that:
+        - "'ssh' in ssh_result.stdout"
+      fail_msg: SSH service is not enabled in firewalld daemon
+      success_msg: SSH service is enabled in firewalld daemon
+
+    register: result
+    changed_when:
+      - result.evaluated_to is defined
+      - result.evaluated_to == false
+    failed_when: false

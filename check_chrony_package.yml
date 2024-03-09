@@ -1,0 +1,26 @@
+---
+- name: 1-4 Check if Chrony  package is installed and configured 
+  hosts: all
+  tags: paw_check_1-4
+  tasks:
+  - name: Gather package facts
+    ansible.builtin.package_facts:
+      manager: auto
+
+#  - name: Display packages details 
+#    ansible.builtin.debug:  
+#      var: ansible_facts.packages
+
+  - name: Check if Chrony package is installed
+    ansible.builtin.assert:
+      that:
+        - "'chrony' in ansible_facts.packages"
+      fail_msg: Chrony package is NOT installed
+      success_msg: Chrony package is installed
+#      quiet: true
+
+    register: result
+    changed_when:
+      - result.evaluated_to is defined
+      - result.evaluated_to == false
+    failed_when: false
