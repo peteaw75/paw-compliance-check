@@ -18,8 +18,8 @@
     ansible.builtin.assert:
       that:
         - "'443' in https_result.stdout"
-      fail_msg: Https port 443  is not enabled in firewalld daemon
-      success_msg: Https port 443  is enabled in firewalld daemon
+      fail_msg: "Non-Compliance! Https port 443  is not enabled in firewalld daemon"
+      success_msg: "Compliance! Https port 443  is enabled in firewalld daemon"
 #      quiet: true
 
     register: result

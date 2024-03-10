@@ -17,8 +17,8 @@
     ansible.builtin.assert:
       that:
         - "'ssh' in ssh_result.stdout"
-      fail_msg: SSH service is not enabled in firewalld daemon
-      success_msg: SSH service is enabled in firewalld daemon
+      fail_msg: "Non-Compliance! SSH service is not enabled in firewalld daemon"
+      success_msg: "Compliance! SSH service is enabled in firewalld daemon"
 
     register: result
     changed_when:

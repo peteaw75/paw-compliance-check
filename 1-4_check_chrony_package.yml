@@ -15,8 +15,8 @@
     ansible.builtin.assert:
       that:
         - "'chrony' in ansible_facts.packages"
-      fail_msg: Chrony package is NOT installed
-      success_msg: Chrony package is installed
+      fail_msg: "Non-Compliance! Chrony package is NOT installed"
+      success_msg: "Compliance! Chrony package is installed"
 #      quiet: true
 
     register: result
