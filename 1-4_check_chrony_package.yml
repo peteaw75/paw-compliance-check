@@ -17,10 +17,14 @@
         - "'chrony' in ansible_facts.packages"
       fail_msg: "Non-Compliance! Chrony package is NOT installed"
       success_msg: "Compliance! Chrony package is installed"
-#      quiet: true
+      quiet: false
 
     register: result
     changed_when:
       - result.evaluated_to is defined
       - result.evaluated_to == false
     failed_when: false
+
+  - name: Display result output
+    ansible.builtin.debug:
+      msg: '{{ result.msg }}'
