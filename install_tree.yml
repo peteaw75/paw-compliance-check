@@ -1,0 +1,12 @@
+---
+
+- name: Install tree package
+  hosts: all 
+  gather_facts: true
+  tasks:
+
+  - name: Install tree package using yum
+    ansible.builtin.yum:
+      name: tree
+      state: present
+

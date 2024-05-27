@@ -9,6 +9,7 @@
     ansible.builtin.command:
       cmd: firewall-cmd --list-ports
     register: https_result
+    changed_when: false
     
   - name: Display status of https port 443
     ansible.builtin.debug:  

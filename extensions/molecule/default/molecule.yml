@@ -1,0 +1,22 @@
+---
+dependency:
+  name: galaxy
+  options:
+    requirements-file: requirements.yml
+platforms:
+#  - name: molecule-ubuntu
+#    image: ubuntu:18.04
+  - name: instance-systemd1
+    image: quay.io/centos/centos:stream8
+    command: /sbin/init
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+driver:
+  options:
+    managed: False
+    login_cmd_template: "podman exec -ti {instance} bash"
+    ansible_connection_options:
+      ansible_connection: podman
