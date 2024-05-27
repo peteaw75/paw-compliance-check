@@ -1,29 +1,31 @@
 ---
-- name: 1-2 Check ssh service is enabled 
+- name: 1-2 Check ssh service is enabled in firewalld 
   hosts: all
+  vars:
+    service_name: ssh
   tags: paw_check_1-2
   tasks:
 
-  - name: Collect the status of ssh service
-    ansible.builtin.command:
-      cmd: firewall-cmd --list-services
-    register: ssh_result
-
-    changed_when: false
+    - name: Collect the status of ssh service
+      ansible.builtin.command:
+        cmd: firewall-cmd --list-services
+      register: firewalld_result
+      changed_when: false
     
-#  - name: Display status of ssh service
-#    ansible.builtin.debug:  
-#      msg: Result is {{ ssh_result.stdout_lines }}
+    - name: Display status of ssh service
+      ansible.builtin.debug:  
+        msg: "Info: Host {{ ansible_hostname }} has a list of enabled services in firewalld - {{ firewalld_result.stdout_lines }} "
 
-  - name: Check if ssh service is enabled in firewalld daemon
-    ansible.builtin.assert:
-      that:
-        - "'ssh' in ssh_result.stdout"
-      fail_msg: "Non-Compliance! SSH service is not enabled in firewalld daemon"
-      success_msg: "Compliance! SSH service is enabled in firewalld daemon"
+    - name: Check if ssh service is enabled in firewalld daemon
+      ansible.builtin.assert:
+        that:
+          #- "'ssh' in ssh_result.stdout"
+          - "service_name in firewalld_result.stdout"
+        fail_msg: "Non-Compliance! Host {{ ansible_hostname }} -  SSH service is not enabled in firewalld"
+        success_msg: "Compliance!"
 
-    register: result
-    changed_when:
-      - result.evaluated_to is defined
-      - result.evaluated_to == false
-    failed_when: false
+      register: result
+      changed_when:
+        - result.evaluated_to is defined
+        - result.evaluated_to == false
+      failed_when: false

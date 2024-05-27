@@ -1,30 +1,32 @@
 ---
 - name: 1-3 Check https port 443 is enabled 
   hosts: all
+  vars:
+    check_firewall_port: '443'
   tags: paw_check_1-3
 
   tasks:
 
-  - name: Status of https port 443 in firewalld daemon
-    ansible.builtin.command:
-      cmd: firewall-cmd --list-ports
-    register: https_result
-    changed_when: false
+    - name: Collect the status of https port 443 in firewalld
+      ansible.builtin.command:
+        cmd: firewall-cmd --list-ports
+      register: firewalld_result
+      changed_when: false
     
-  - name: Display status of https port 443
-    ansible.builtin.debug:  
-      msg: Result is {{ https_result.stdout_lines }}
+    - name: Display status of https port 443
+      ansible.builtin.debug:  
+        msg: "Info: Host {{ ansible_hostname }} has the list of enabled ports in firewalld - {{ firewalld_result.stdout_lines }}"
 
-  - name: Check if https port 443 is enabled in firewalld daemon
-    ansible.builtin.assert:
-      that:
-        - "'443' in https_result.stdout"
-      fail_msg: "Non-Compliance! Https port 443  is not enabled in firewalld daemon"
-      success_msg: "Compliance! Https port 443  is enabled in firewalld daemon"
-#      quiet: true
+    - name: Check if https port 443 is enabled in firewalld
+      ansible.builtin.assert:
+        that:
+          #- "'443' in firewalld_result.stdout"
+          - "check_firewall_port in firewalld_result.stdout"
+        fail_msg: "Non-Compliance! Host: {{ ansible_hostname }} - Https port 443  is not enabled in firewalld"
+        success_msg: "Compliance!"
 
-    register: result
-    changed_when:
-      - result.evaluated_to is defined
-      - result.evaluated_to == false
-    failed_when: false
+      register: result
+      changed_when:
+        - result.evaluated_to is defined
+        - result.evaluated_to == false
+      failed_when: false

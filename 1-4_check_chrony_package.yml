@@ -1,30 +1,30 @@
 ---
 - name: 1-4 Check if Chrony  package is installed and configured 
   hosts: all
+  vars:
+    check_package_name: chrony
   tags: paw_check_1-4
   tasks:
-  - name: Gather package facts
-    ansible.builtin.package_facts:
-      manager: auto
+          
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
 
-#  - name: Display packages details 
-#    ansible.builtin.debug:  
-#      var: ansible_facts.packages
+#    - name: Display packages details 
+#      ansible.builtin.debug:  
+#        var: ansible_facts.packages
 
-  - name: Check if Chrony package is installed
-    ansible.builtin.assert:
-      that:
-        - "'chrony' in ansible_facts.packages"
-      fail_msg: "Non-Compliance! Chrony package is NOT installed"
-      success_msg: "Compliance! Chrony package is installed"
-      quiet: false
+    - name: Check if Chrony package is installed
+      ansible.builtin.assert:
+        that:
+          #- "'chrony' in ansible_facts.packages"
+          - "check_package_name in ansible_facts.packages"
+        fail_msg: "Non-Compliance! Host: {{ ansible_hostname }} - Chrony package is NOT installed"
+        success_msg: "Compliance!"
+        #quiet: false
 
-    register: result
-    changed_when:
-      - result.evaluated_to is defined
-      - result.evaluated_to == false
-    failed_when: false
-
-  - name: Display result output
-    ansible.builtin.debug:
-      msg: '{{ result.msg }}'
+      register: result
+      changed_when:
+        - result.evaluated_to is defined
+        - result.evaluated_to == false
+      failed_when: false
