@@ -1,4 +1,6 @@
 ---
+# List of playbooks for compliance check
+
 - name: 1st check
   import_playbook: 1-1_check_memory.yml
 
@@ -10,3 +12,6 @@
 
 - name: 4th check
   import_playbook: 1-4_check_chrony_package.yml
+
+- name: 5th check
+  import_playbook: 1-5-check_ssh_authentication.yml

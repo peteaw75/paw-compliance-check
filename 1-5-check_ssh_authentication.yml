@@ -1,0 +1,38 @@
+---
+- name: 1-5 Check if Password authentication disabled in sshd_config
+  hosts: all
+  become: true
+  tags: paw_check_1-5
+
+  tasks:
+    - name: Retrieve PasswordAuthentication value
+      ansible.builtin.set_fact:
+        check_ssh_passwd_auth: "{{ lookup('file', 'files/sample-sshd_config') | regex_search('PasswordAuthentication .*') }}"
+
+    - name: Debug - show check_ssh_passwd_auth variable value
+      ansible.builtin.debug:
+        msg: "The check_ssh_passwd_auth value is {{ check_ssh_passwd_auth }}"
+
+    - name: Collect host sshd_config info and exclude commented lines
+      ansible.builtin.shell:
+        cmd: cat /etc/ssh/sshd_config | grep '^PasswordAuthentication.*' 
+      register: sshd_config_host_result
+      changed_when: false
+
+    - name: Debug - show retrieved modified sshd_config results on each host
+      ansible.builtin.debug:
+        msg: "Output is {{ sshd_config_host_result.stdout_lines }}"
+
+    - name: Check if Password authentication is disabled in sshd_config
+      ansible.builtin.assert:
+        that:
+          - "check_ssh_passwd_auth in sshd_config_host_result.stdout_lines"
+        fail_msg: "Non-Compliance! Host {{ ansible_hostname }} -  {{sshd_config_host_result.stdout_lines}} "
+        success_msg: "Compliance!"
+
+      register: result
+      changed_when:
+        - result.evaluated_to is defined
+        - result.evaluated_to == false
+      failed_when: false
+
